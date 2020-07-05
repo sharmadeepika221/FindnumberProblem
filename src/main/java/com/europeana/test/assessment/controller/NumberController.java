@@ -3,6 +3,8 @@ package com.europeana.test.assessment.controller;
 import com.europeana.test.assessment.exception.ResourceNotFoundException;
 import com.europeana.test.assessment.model.ProblemModel;
 import com.europeana.test.assessment.service.NumberService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
  * Controller class
  */
 @RestController
+@RequestMapping(value = "/api/findNumber")
+@Api(tags = { "findNumber" })
 public class NumberController extends AbstractRestHandler{
 
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -30,10 +34,10 @@ public class NumberController extends AbstractRestHandler{
      */
     @PostMapping("/setUpperLimit")
     @ResponseStatus(HttpStatus.OK)
-    //@ApiOperation(value = "Sets the upper limit.", notes = "")
+    @ApiOperation(value = "Sets the upper limit.", notes = "")
     public ResponseEntity<ProblemModel> setUpperLimit(
             @RequestBody @Valid ProblemModel model) {
-        ProblemModel newModel = numberService.postUpperLimit(model.getMaxlimit());
+        ProblemModel newModel = numberService.postUpperLimit(model.getMaxLimit());
         if (newModel == null) {
             log.error("Please pass a valid upper limit");
             throw new ResourceNotFoundException("Upper limit can not be set.");
@@ -47,14 +51,14 @@ public class NumberController extends AbstractRestHandler{
      *
      * @return ResponseEntityt<ProblemModel>
      */
-    @RequestMapping(value = "/getResult", method = RequestMethod.GET)
+    @RequestMapping(value = "/getResult", method = RequestMethod.GET, produces = {"application/json","application/xml"} )
     @ResponseStatus(HttpStatus.OK)
-   // @ApiOperation(value = "Get the Result")
+    @ApiOperation(value = "Get the Result")
     public ResponseEntity<ProblemModel> getProblemResult() {
         ProblemModel model = numberService.retrieveResult();
         if (model == null) {
             log.error("Please make sure upper limit has been provided.");
-            throw new ResourceNotFoundException("Result car not retreived");
+            throw new ResourceNotFoundException("Result can not retreived");
         }
         return new ResponseEntity<ProblemModel>(model, HttpStatus.OK);
     }

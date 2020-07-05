@@ -27,7 +27,7 @@ public class NumberServiceImpl implements NumberService {
     @Override
     public ProblemModel postUpperLimit(int maxlimit) {
         ProblemModel newModel = new ProblemModel();
-        newModel.setMaxlimit(maxlimit);
+        newModel.setMaxLimit(maxlimit);
         modelStore.setModel(newModel);
         return newModel;
     }
@@ -40,10 +40,14 @@ public class NumberServiceImpl implements NumberService {
     @Override
     public ProblemModel retrieveResult() {
         ProblemModel model =  modelStore.getModel();
-        int maxLimit = model.getMaxlimit();
-        int result = findMinNumberDivisibleByRange(maxLimit);
-        log.info("Maximum upper limit for the problem is {} and result is {}", maxLimit, result);
-        model.setResult(result);
+        if(model != null && model.getMaxLimit() != 0){
+            long startTime = System.nanoTime();
+            int result = findMinNumberDivisibleByRange(model.getMaxLimit());
+            long endTime = System.nanoTime();
+            log.info("Maximum upper limit for the problem is {} and result is {}", model.getMaxLimit(), result);
+            model.setResult(result);
+            model.setTimetaken((endTime-startTime)/1000);
+        }
         return model;
     }
 

@@ -11,7 +11,6 @@ public class ModelStore {
     public ProblemModel getModel() {
         return model;
     }
-
     public void setModel(ProblemModel model) {
         this.model = model;
     }
